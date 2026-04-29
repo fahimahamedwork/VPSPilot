@@ -1,6 +1,6 @@
 #!/bin/bash
 # ─── VPSPilot Quick Start Script ─────────────────────────────
-# Run this script to set up and start VPSPilot
+# Run this script from the project root to set up and start VPSPilot
 
 set -e
 
@@ -45,13 +45,14 @@ pip3 install -r requirements.txt
 
 # Validate configuration
 echo -e "${GREEN}→${NC} Validating configuration..."
-python3 -c "from config import Config; Config.validate()" 2>/dev/null
+cd src && python3 -c "from config import Config; Config.validate()" 2>/dev/null
 if [ $? -ne 0 ]; then
     echo -e "${RED}✗${NC} Configuration validation failed. Check your .env file."
     exit 1
 fi
+cd ..
 echo -e "${GREEN}✓${NC} Configuration valid"
 
 # Start the bot
 echo -e "${GREEN}→${NC} Starting VPSPilot..."
-python3 bot.py
+python3 src/bot.py

@@ -1,13 +1,16 @@
 # ─── VPSPilot Docker Compose ─────────────────────────────────
 # Quick deployment with Docker Compose
+# Run from the project root directory
 
 services:
   vpspilot:
-    build: .
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
     container_name: vpspilot
     restart: unless-stopped
     env_file:
-      - .env
+      - ../.env
     volumes:
       # Mount host filesystem for full VPS access
       - /:/host:ro

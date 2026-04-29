@@ -8,8 +8,8 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-# Load .env file from project root
-load_dotenv(Path(__file__).parent / ".env")
+# Load .env file from project root (one level up from src/)
+load_dotenv(Path(__file__).parent.parent / ".env")
 
 
 class Config:

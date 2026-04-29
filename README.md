@@ -80,7 +80,7 @@ nano .env
 pip3 install -r requirements.txt
 
 # Start the bot
-python3 bot.py
+python3 src/bot.py
 ```
 
 ### Option 2: Using the Setup Script
@@ -100,14 +100,14 @@ cd vpspilot
 cp .env.example .env
 nano .env
 
-# Build and run
-docker compose up -d
+# Build and run (from project root)
+docker compose -f docker/docker-compose.yml up -d
 
 # View logs
-docker compose logs -f
+docker compose -f docker/docker-compose.yml logs -f
 
 # Stop
-docker compose down
+docker compose -f docker/docker-compose.yml down
 ```
 
 ---
@@ -217,30 +217,34 @@ Edit the `.env` file with your settings:
 
 ```
 vpspilot/
-├── bot.py              # Main entry point & command handlers
-├── config.py           # Configuration management
-├── requirements.txt    # Python dependencies
-├── .env.example        # Environment variable template
-├── Dockerfile          # Docker build file
-├── docker-compose.yml  # Docker Compose deployment
-├── start.sh            # Quick start script
-├── core/               # Core infrastructure
-│   ├── auth.py         # Authentication decorator
-│   ├── executor.py     # Shell command executor
-│   └── router.py       # Command registry
-├── modules/            # Feature modules
-│   ├── system.py       # System monitoring
-│   ├── processes.py    # Process management
-│   ├── services.py     # Service management
-│   ├── filesystem.py   # File operations
-│   ├── docker_m.py     # Docker management
-│   ├── network.py      # Network tools
-│   └── power.py        # Power control & cron
-├── ui/                 # User interface
-│   ├── keyboards.py    # Inline & reply keyboards
-│   └── formatters.py   # Output formatting
-└── utils/              # Utilities
-    └── helpers.py      # Shared helper functions
+├── src/                    # Application source code
+│   ├── bot.py              # Main entry point & command handlers
+│   ├── config.py           # Configuration management
+│   ├── core/               # Core infrastructure
+│   │   ├── auth.py         # Authentication decorator
+│   │   ├── executor.py     # Shell command executor
+│   │   └── router.py       # Command registry
+│   ├── modules/            # Feature modules
+│   │   ├── system.py       # System monitoring
+│   │   ├── processes.py    # Process management
+│   │   ├── services.py     # Service management
+│   │   ├── filesystem.py   # File operations
+│   │   ├── docker_m.py     # Docker management
+│   │   ├── network.py      # Network tools
+│   │   └── power.py        # Power control & cron
+│   ├── ui/                 # User interface
+│   │   ├── keyboards.py    # Inline & reply keyboards
+│   │   └── formatters.py   # Output formatting
+│   └── utils/              # Utilities
+│       └── helpers.py      # Shared helper functions
+├── docker/                 # Docker deployment files
+│   ├── Dockerfile          # Multi-stage Docker build
+│   └── docker-compose.yml  # Docker Compose configuration
+├── requirements.txt        # Python dependencies
+├── .env.example            # Environment variable template
+├── .gitignore              # Git ignore rules
+├── start.sh                # Quick start script
+└── README.md               # This file
 ```
 
 ---
@@ -258,7 +262,7 @@ vpspilot/
 1. **Run as root** for full VPS control (systemctl, docker, iptables, etc.)
 2. **Keep your .env secure** — never commit it to version control
 3. **Limit authorized users** to only your own Telegram ID
-4. **Review blocked patterns** in `utils/__init__.py` and add your own
+4. **Review blocked patterns** in `src/utils/__init__.py` and add your own
 5. **Use HTTPS** when connecting to external services
 
 ---
@@ -268,7 +272,7 @@ vpspilot/
 - Python 3.10+
 - Linux-based VPS (Ubuntu, Debian, CentOS, Arch)
 - Telegram Bot Token
-- System dependencies (auto-detected): `systemctl`, `docker`, `uff`, `iptables`, `traceroute`, `dig`
+- System dependencies (auto-detected): `systemctl`, `docker`, `ufw`, `iptables`, `traceroute`, `dig`
 
 ---
 

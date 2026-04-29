@@ -1,5 +1,6 @@
 # ─── VPSPilot Dockerfile ─────────────────────────────────────
 # Multi-stage build for a lean production image
+# Build context: project root (docker compose runs from project root)
 
 # Stage 1: Builder
 FROM python:3.12-slim AS builder
@@ -35,8 +36,8 @@ RUN groupadd -r vpspilot && useradd -r -g vpspilot -m vpspilot
 
 WORKDIR /app
 
-# Copy application code
-COPY . .
+# Copy application source code
+COPY src/ ./src/
 
 # Set environment variables
 ENV PYTHONUNBUFFERED=1
@@ -45,4 +46,4 @@ ENV PYTHONDONTWRITEBYTECODE=1
 # Run as root for full VPS access (required for systemctl, docker, etc.)
 # USER vpspilot
 
-ENTRYPOINT ["python", "bot.py"]
+ENTRYPOINT ["python", "src/bot.py"]
