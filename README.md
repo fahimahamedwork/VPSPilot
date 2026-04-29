@@ -1,12 +1,68 @@
 # VPSPilot 🛩
 
-**Full-featured Telegram bot for remote VPS management.**
+**Terminal-first Telegram bot for remote VPS management.**
 
-Control your entire server from Telegram — system monitoring, process management, service control, Docker, filesystem, networking, power operations, and an interactive shell. All secured by user ID authentication.
+Three modes in one bot — type commands like SSH, get pretty formatted output with /commands, or tap buttons in the menu. Your VPS, your way.
+
+---
+
+## 🎯 Three Modes
+
+| Mode | How | Example |
+|---|---|---|
+| 🖥 **Terminal** | Just type — default mode | `ls /var/log`, `restart nginx`, `docker ps` |
+| 📊 **Pretty** | /slash commands for formatted output | `/sys`, `/cpu`, `/mem` |
+| 🎛 **Menu** | Tap keyboard buttons | `/menu` → tap categories |
 
 ---
 
 ## ✨ Features
+
+### 🖥 Terminal Mode (Default)
+Just type naturally — the smart interpreter handles it:
+- `ls /var/log` → list directory
+- `cat /etc/hosts` → read file
+- `restart nginx` → systemctl restart
+- `status docker` → systemctl status
+- `logs ssh` → journal logs
+- `docker ps` → running containers
+- `docker logs web` → container logs
+- `docker restart web` → restart container
+- `kill 1234` → kill process
+- `kill -9 1234` → force kill
+- `find nginx` → search processes
+- `ping google.com` → ping host
+- `dns google.com` → DNS lookup
+- `firewall` → UFW status
+- `reboot` or `reboot 5` → schedule reboot
+- `shutdown` or `shutdown now` → schedule shutdown
+- `update` → system update
+- `cron list` → list cron jobs
+- `top` → top processes
+- `df` → disk usage
+- `uptime` → system overview
+- `conn` → active connections
+- `ports` → listening ports
+- Anything else → executed as shell command
+
+### 📊 Pretty Mode (/Commands)
+Formatted output with progress bars and visual indicators:
+- `/sys` — Full system overview with bars
+- `/cpu` — Per-core CPU usage
+- `/mem` — Memory with progress indicators
+- `/disk` — All disk partitions
+- `/ps` — Top processes by CPU
+- `/svc <name>` — Service status
+- `/dps` — Docker containers
+- `/fw` — Firewall status
+- And 30+ more...
+
+### 🎛 Menu Mode
+Interactive keyboard for guided actions:
+- `/menu` → Open category keyboard
+- Tap System → Overview, CPU, Memory, Disk
+- Tap Docker → Containers, Images, Stats, Logs
+- Tap any category to explore
 
 ### 🖥 System Monitoring
 - Real-time CPU, RAM, Disk, and Network metrics
@@ -131,7 +187,42 @@ Edit the `.env` file with your settings:
 
 ---
 
-## 📋 Command Reference
+## 📋 Terminal Quick Reference
+
+Just type these — no /prefix needed:
+
+| What you type | What happens |
+|---|---|
+| `top` | Top processes by CPU |
+| `psm` | Top processes by memory |
+| `find nginx` | Search processes |
+| `kill 1234` | Kill process |
+| `kill -9 1234` | Force kill |
+| `restart nginx` | systemctl restart nginx |
+| `status docker` | systemctl status docker |
+| `logs ssh` | journalctl -u ssh |
+| `ls /var/log` | List directory |
+| `cat /etc/hosts` | Read file |
+| `df` | Disk usage |
+| `docker ps` | Running containers |
+| `docker logs web` | Container logs |
+| `docker restart web` | Restart container |
+| `dimg` | Docker images |
+| `ping google.com` | Ping host |
+| `trace google.com` | Traceroute |
+| `dns google.com` | DNS lookup |
+| `firewall` | UFW status |
+| `conn` | Active connections |
+| `ports` | Listening ports |
+| `reboot` | Schedule reboot |
+| `shutdown now` | Shutdown immediately |
+| `update` | System update |
+| `cron list` | List cron jobs |
+| `sys`, `cpu`, `mem` | System monitoring |
+| `uptime` | System overview |
+| Anything else | Executed as shell command |
+
+## 📋 /Command Reference (Pretty Formatted)
 
 ### System Monitoring
 | Command | Description |
@@ -206,11 +297,6 @@ Edit the `.env` file with your settings:
 | `/update` | System update |
 | `/syslog [service]` | System logs |
 
-### Shell
-| Command | Description |
-|---|---|
-| `/shell <command>` | Execute shell command |
-
 ---
 
 ## 🏗 Project Structure
@@ -218,11 +304,12 @@ Edit the `.env` file with your settings:
 ```
 vpspilot/
 ├── src/                    # Application source code
-│   ├── bot.py              # Main entry point & command handlers
+│   ├── bot.py              # Main entry point (hybrid terminal-first)
 │   ├── config.py           # Configuration management
 │   ├── core/               # Core infrastructure
 │   │   ├── auth.py         # Authentication decorator
 │   │   ├── executor.py     # Shell command executor
+│   │   ├── interpreter.py  # Smart command interpreter (brain)
 │   │   └── router.py       # Command registry
 │   ├── modules/            # Feature modules
 │   │   ├── system.py       # System monitoring
@@ -252,6 +339,7 @@ vpspilot/
 ## 🔒 Security
 
 - **Authentication**: Only whitelisted Telegram user IDs can interact with the bot
+- **Smart Interpreter**: Natural commands are parsed and routed safely
 - **Command Validation**: Dangerous shell patterns (fork bombs, recursive root deletes, device writes) are blocked
 - **Path Sanitization**: Directory traversal attacks (`..`) are prevented
 - **Output Truncation**: Large outputs are truncated to prevent Telegram API errors
