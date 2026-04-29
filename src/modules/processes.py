@@ -3,8 +3,6 @@ VPSPilot — Process Management Module
 List, monitor, and manage running processes.
 """
 
-import signal
-
 import psutil
 
 from core.executor import execute

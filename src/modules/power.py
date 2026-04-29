@@ -17,10 +17,7 @@ async def reboot_system(delay: int = 1, message: str = "Rebooting via VPSPilot")
     if delay <= 0:
         return "❌ Delay must be a positive number of minutes."
 
-    if delay == 1:
-        result = await execute(f"sudo shutdown -r +{delay} '{message}'")
-    else:
-        result = await execute(f"sudo shutdown -r +{delay} '{message}'")
+    result = await execute(f"sudo shutdown -r +{delay} '{message}'")
 
     if result.success:
         return (

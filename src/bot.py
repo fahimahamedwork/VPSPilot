@@ -30,7 +30,7 @@ from telegram.ext import (
 from config import Config
 from core.auth import authorized_only
 from core.executor import execute
-from core.interpreter import interpret, ActionType
+from core.interpreter import interpret, ActionType, InterpretedCommand
 from ui.keyboards import (
     main_menu_keyboard,
     system_keyboard,
@@ -41,7 +41,7 @@ from ui.keyboards import (
     network_keyboard,
     power_keyboard,
 )
-from ui.formatters import header, truncate
+from ui.formatters import truncate
 from modules import system, processes, services, filesystem, docker_m, network, power
 from utils import sanitize_path, validate_command
 
@@ -622,28 +622,11 @@ async def _route_command(cmd) -> str:
     if cmd.action == ActionType.MENU:
         return "🎛 Use /menu to open the interactive keyboard."
 
-    # ── FALLBACK ──────────────────────────────────────────────
-    return f"❓ Couldn't interpret: `{cmd.original}`\n\nExecuting as shell command...\n\n" + await _route_command(
-        interpret.__class__.__new__(interpret.__class__)  # Won't work, just shell it
-    ) if False else await _shell_fallback(cmd.original)
-
-
-async def _shell_fallback(command: str) -> str:
-    """Execute as raw shell when routing fails."""
-    try:
-        validate_command(command)
-    except ValueError as exc:
-        return f"🚫 *Blocked:* {exc}"
-
-    result = await execute(command)
-    output = ""
-    if result.stdout: output += result.stdout
-    if result.stderr: output += ("\n" if output else "") + result.stderr
-    if not output.strip(): output = "(no output)"
-    output = truncate(output)
-
-    emoji = "✅" if result.success else "❌"
-    return f"🖥 {emoji} `{command}`\nExit: {result.return_code}\n\n```\n{output}\n```"
+    # If we get here, action type wasn't handled — fallback to shell
+    shell_cmd = InterpretedCommand(
+        action=ActionType.SHELL, sub_action="execute", target="", extra="", original=cmd.original
+    )
+    return await _route_command(shell_cmd)
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -793,12 +776,9 @@ def _get_menu_entry(text: str) -> tuple[str, Any] | None:
         "🌐 Network": ("🌐 *Network Tools*\n\nSelect an action:", network_keyboard()),
         "⚡ Power": ("⚡ *Power & Admin*\n\nSelect an action:", power_keyboard()),
         "🖥 Shell": ("🖥 *Terminal Mode*\n\nJust type any command — it executes directly!\n\nExamples: `ls /`, `uptime`, `docker ps`", None),
-        "❓ Help": None,
+        "❓ Help": ("📖 *Help*\n\nType commands naturally or use /help for full reference.\n\nQuick: `top`, `restart nginx`, `docker ps`, `ping google.com`", None),
     }
-    entry = menu_map.get(text)
-    if entry is None and text == "❓ Help":
-        return ("help", None)
-    return entry
+    return menu_map.get(text)
 
 
 async def _loading(update: Update) -> Any:

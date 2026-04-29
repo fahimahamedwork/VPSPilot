@@ -309,8 +309,7 @@ vpspilot/
 │   ├── core/               # Core infrastructure
 │   │   ├── auth.py         # Authentication decorator
 │   │   ├── executor.py     # Shell command executor
-│   │   ├── interpreter.py  # Smart command interpreter (brain)
-│   │   └── router.py       # Command registry
+│   │   └── interpreter.py  # Smart command interpreter (brain)
 │   ├── modules/            # Feature modules
 │   │   ├── system.py       # System monitoring
 │   │   ├── processes.py    # Process management
@@ -323,7 +322,7 @@ vpspilot/
 │   │   ├── keyboards.py    # Inline & reply keyboards
 │   │   └── formatters.py   # Output formatting
 │   └── utils/              # Utilities
-│       └── helpers.py      # Shared helper functions
+│       └── __init__.py    # Shared helper functions
 ├── docker/                 # Docker deployment files
 │   ├── Dockerfile          # Multi-stage Docker build
 │   └── docker-compose.yml  # Docker Compose configuration

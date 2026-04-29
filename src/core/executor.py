@@ -4,7 +4,6 @@ Safely executes shell commands with timeout, output truncation, and error handli
 """
 
 import asyncio
-import subprocess
 from typing import NamedTuple
 
 from config import Config

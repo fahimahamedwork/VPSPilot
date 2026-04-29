@@ -191,15 +191,3 @@ def power_keyboard() -> InlineKeyboardMarkup:
             InlineKeyboardButton("◀ Back", callback_data="menu_back"),
         ],
     ])
-
-
-# ─── Confirmation Keyboards ──────────────────────────────────
-
-def confirm_keyboard(action: str, target: str) -> InlineKeyboardMarkup:
-    """Build a confirmation keyboard for destructive actions."""
-    return InlineKeyboardMarkup([
-        [
-            InlineKeyboardButton("✅ Confirm", callback_data=f"confirm_{action}_{target}"),
-            InlineKeyboardButton("❌ Cancel", callback_data="confirm_cancel"),
-        ],
-    ])

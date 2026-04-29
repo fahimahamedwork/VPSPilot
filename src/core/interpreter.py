@@ -9,7 +9,7 @@ Any plain text that isn't a /slash command or menu button gets routed here.
 import re
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Callable, Awaitable
+from typing import Any
 
 
 class ActionType(Enum):
